@@ -15,6 +15,7 @@ linkedin_username: "prithvi-ramrucha"
 #youtube_username: username
 #googleplus_username: +username
 
+# Cite navigation,
 nav:
   - name: "CV"
     link: "/"
@@ -22,6 +23,25 @@ nav:
     link: "/projects/"
   - name: "Notes"
     link: "/Notes/"
+
+# Notes section,
+collections:
+  books:
+    output: true
+    permalink: /notes/:book/:path/
+
+defaults:
+  - scope:
+      path: ""
+      type: books
+    values:
+      layout: book
+      toc: true
+  - scope:
+      path: ""
+      type: post
+    values:
+      tags: Other
 
 #########################################################################################
 ######### Nothing below needs to be changed (unless you know what you're doing) #########
