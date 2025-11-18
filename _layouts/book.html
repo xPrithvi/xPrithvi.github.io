@@ -1,0 +1,90 @@
+---
+layout: default
+---
+<link href="/css/override.css" rel="stylesheet" type="text/css">
+
+{% assign book_name = page.path | split: '/' | first %}
+{% assign book_chapters = site.books | where: "book", book_name | sort: "order" %}
+
+<div class="book-container">
+  <aside class="book-sidebar">
+    <div class="sidebar-content">
+      <h3>{{ page.book_title | default: page.title }}</h3>
+      
+      <nav class="book-toc">
+        <ul class="toc-list">
+          <li><a href="/notes/{{ book_name }}/">Overview</a></li>
+          {% for chapter in book_chapters %}
+            {% if chapter.url != page.url %}
+              <li class="toc-level-1">
+                <a href="{{ chapter.url }}">
+                  {% if chapter.chapter_number %}{{ chapter.chapter_number }}. {% endif %}{{ chapter.title }}
+                </a>
+              </li>
+            {% else %}
+              <li class="toc-level-1 active">
+                <strong>{% if chapter.chapter_number %}{{ chapter.chapter_number }}. {% endif %}{{ chapter.title }}</strong>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </nav>
+      
+      <div class="book-navigation">
+        {% assign current_index = 0 %}
+        {% for chapter in book_chapters %}
+          {% if chapter.url == page.url %}
+            {% assign current_index = forloop.index0 %}
+          {% endif %}
+        {% endfor %}
+        
+        {% if current_index > 0 %}
+          {% assign prev_chapter = book_chapters[current_index | minus: 1] %}
+          <a href="{{ prev_chapter.url }}" class="nav-btn prev">← {{ prev_chapter.title }}</a>
+        {% endif %}
+        
+        {% assign next_index = current_index | plus: 1 %}
+        {% if book_chapters[next_index] %}
+          {% assign next_chapter = book_chapters[next_index] %}
+          <a href="{{ next_chapter.url }}" class="nav-btn next">{{ next_chapter.title }} →</a>
+        {% endif %}
+      </div>
+    </div>
+  </aside>
+
+  <main class="book-content">
+    <article class="post">
+      <header class="post-header">
+        <nav class="breadcrumb">
+          <a href="/notes/">Notes</a> &raquo; 
+          <a href="/notes/{{ book_name }}/">{{ page.book_title | default: book_name | replace: '-', ' ' | titleize }}</a>
+          {% if page.chapter_number %}
+            &raquo; Chapter {{ page.chapter_number }}
+          {% endif %}
+        </nav>
+        
+        <h1 class="post-title">
+          {% if page.chapter_number %}{{ page.chapter_number }}. {% endif %}{{ page.title }}
+        </h1>
+        
+        {% if page.description %}
+          <p class="book-description">{{ page.description }}</p>
+        {% endif %}
+      </header>
+
+      <div class="post-content">
+        {{ content }}
+      </div>
+
+      <div class="book-footer-nav">
+        {% if current_index > 0 %}
+          <a href="{{ prev_chapter.url }}" class="footer-nav prev">← Previous: {{ prev_chapter.title }}</a>
+        {% endif %}
+        
+        {% if book_chapters[next_index] %}
+          <a href="{{ next_chapters[next_index].url }}" class="footer-nav next">Next: {{ next_chapter.title }} →</a>
+        {% endif %}
+      </div>
+    </article>
+  </main>
+</div>
